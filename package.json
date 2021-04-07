@@ -1,0 +1,164 @@
+{
+  "name": "nvidia-smi-plus",
+  "displayName": "nvidia-smi+",
+  "publisher": "elazarcoh",
+  "description": "",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.55.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "nvidia-smi+",
+      "properties": {
+        "nvidia-smi-plus.refresh.autoRefresh": {
+          "type": "boolean",
+          "title": "Auto Refesh",
+          "default": true
+        },
+        "nvidia-smi-plus.refresh.timeInterval": {
+          "type": "integer",
+          "title": "Time Interval (sec)",
+          "default": 3,
+          "minimum": 1,
+          "maximum": 3600,
+          "markdownDescription": "Controls the refresh time interval in seconds. Only applies when `#nvidia-smi-plus.refresh.autoRefresh#` is set to `true`."
+        },
+        "nvidia-smi-plus.view.gpuDesc": {
+          "type": "string",
+          "enum": [
+            "product_name",
+            "gpu_temp",
+            "gpu_util",
+            "fan_speed",
+            "memory_util",
+            "memory_total",
+            "memory_free",
+            "memory_used",
+            "memory_used_percent"
+          ],
+          "default": "product_name"
+        },
+        "nvidia-smi-plus.view.gpuItems": {
+          "type": "array",
+          "title": "GPU Information",
+          "description": "Configure which information will be shown on the view",
+          "items": {
+            "type": "string",
+            "enum": [
+              "gpu_temp",
+              "gpu_util",
+              "fan_speed",
+              "memory_util",
+              "memory_total",
+              "memory_free",
+              "memory_used",
+              "memory_used_percent"
+            ]
+          },
+          "default": [
+            "memory_total",
+            "memory_free",
+            "memory_used_percent"
+          ]
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "nvidia-smi-plus.refresh",
+        "title": "Refresh",
+        "category": "nvidia-smi+",
+        "icon": "$(timeline-refresh)"
+      },
+      {
+        "command": "nvidia-smi-plus.disable-auto-refresh",
+        "title": "Disable Auto Refresh",
+        "category": "nvidia-smi+",
+        "icon": "$(extensions-sync-ignored)"
+      },
+      {
+        "command": "nvidia-smi-plus.enable-auto-refresh",
+        "title": "Enable Auto Refresh",
+        "category": "nvidia-smi+",
+        "icon": "$(extensions-sync-enabled)"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "nvidia-gpus",
+          "name": "Nvidia GPUs"
+        }
+      ]
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "nvidia-smi-plus.disable-auto-refresh",
+          "when": "false"
+        },
+        {
+          "command": "nvidia-smi-plus.enable-auto-refresh",
+          "when": "false"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "nvidia-smi-plus.refresh",
+          "when": "view == nvidia-gpus",
+          "group": "navigation"
+        },
+        {
+          "command": "nvidia-smi-plus.enable-auto-refresh",
+          "when": "view == nvidia-gpus && !config.nvidia-smi-plus.refresh.autoRefresh",
+          "group": "navigation"
+        },
+        {
+          "command": "nvidia-smi-plus.disable-auto-refresh",
+          "when": "view == nvidia-gpus && config.nvidia-smi-plus.refresh.autoRefresh",
+          "group": "navigation"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "nvidia-gpus",
+        "contents": "No Nvidia GPUs detected"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/cron": "^1.7.2",
+    "@types/glob": "^7.1.3",
+    "@types/mocha": "^8.0.4",
+    "@types/node": "^12.11.7",
+    "@types/vscode": "^1.55.0",
+    "@typescript-eslint/eslint-plugin": "^4.14.1",
+    "@typescript-eslint/parser": "^4.14.1",
+    "eslint": "^7.19.0",
+    "glob": "^7.1.6",
+    "mocha": "^8.2.1",
+    "typescript": "^4.1.3",
+    "vscode-test": "^1.5.0"
+  },
+  "dependencies": {
+    "cron": "^1.8.2",
+    "fast-xml-parser": "^3.19.0"
+  }
+}
