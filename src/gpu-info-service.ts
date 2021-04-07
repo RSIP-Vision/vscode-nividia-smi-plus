@@ -19,7 +19,7 @@ class InfoField {
 }
 
 // for `Expr` Field, the order is sinificant. you can't refernce a field that has not beed calculated yet.
-export const NVIDIA_SMI_FIELDS : Record<string, InfoField> = {
+export const NVIDIA_SMI_FIELDS: Record<string, InfoField> = {
     gpu_temp: new InfoField(InfoFieldType.Value, 'GPU Temperature', ['temperature', 'gpu_temp']),
     gpu_util: new InfoField(InfoFieldType.Value, 'GPU Utilization', ['utilization', 'gpu_util']),
     memory_util: new InfoField(InfoFieldType.Value, 'Memory Utilization', ['utilization', 'memory_util']),
@@ -48,8 +48,13 @@ function resolveGpuInfoField(gpuInfo: any, field: InfoField, values: Record<stri
             field.depends?.forEach(name => {
                 str = replaceAll(str, `{${name}}`, `${values[name]}`);
             });
-            const value = eval(str);
-            return value;
+            try {
+                const value = eval(str);
+                return value;
+            } catch (err) {
+                console.log(`evaluation failed`, err);
+                return undefined;
+            }
     }
 }
 
