@@ -2,6 +2,9 @@
   "name": "nvidia-smi-plus",
   "displayName": "nvidia-smi+",
   "publisher": "elazarcoh",
+  "repository": {
+    "url": "https://github.com/elazarcoh/vscode-nividia-smi-plus"
+  },
   "description": "",
   "version": "0.0.1",
   "engines": {
