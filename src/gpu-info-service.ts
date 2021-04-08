@@ -164,19 +164,22 @@ export class NvidiaSmiService implements vscode.Disposable {
     }
 }
 
-export async function nvidiaSmiAsJsonObject()
-{
+export async function nvidiaSmiAsJsonObject() {
     const child = spawn("nvidia-smi", ["-q", "-x"]);
     let xmlData = '';
     for await (const data of child.stdout) {
         xmlData += data.toString();
     };
     const jsonObj = parser.parse(xmlData, {}, true);
+
+    // for a system with a single GPU
+    if (!Array.isArray(jsonObj.nvidia_smi_log.gpu))
+        jsonObj.nvidia_smi_log.gpu = [jsonObj.nvidia_smi_log.gpu];
+
     return jsonObj;
 }
 
-export async function openAsJsonFile()
-{
+export async function openAsJsonFile() {
     const jsonObj = await nvidiaSmiAsJsonObject();
 
     const fileName = 'nvidia-smi.json';
@@ -184,5 +187,5 @@ export async function openAsJsonFile()
 
     const document = await vscode.workspace.openTextDocument(newUri);
     const textEdit = await vscode.window.showTextDocument(document);
-    await textEdit.edit(edit => edit.insert(new vscode.Position(0, 0), JSON.stringify(jsonObj, undefined, 4)));    
+    await textEdit.edit(edit => edit.insert(new vscode.Position(0, 0), JSON.stringify(jsonObj, undefined, 4)));
 }
