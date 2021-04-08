@@ -15,6 +15,7 @@ class InfoField {
         public readonly label: string,
         public readonly accessor: string[] | string,
         public readonly depends?: string[],
+        public readonly iconPath?: vscode.Uri | string,
     ) { }
 }
 

@@ -15,11 +15,11 @@ class GPUItem extends vscode.TreeItem {
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public readonly itemType: GPUTreeItemType,
         public readonly description: string = "",
+        public readonly iconPath?: vscode.Uri | string,        
         public readonly nestedItems: GPUItem[] = [],
     ) {
         super(label, collapsibleState);
         this.contextValue = itemType;
-
     }
 }
 
@@ -49,6 +49,7 @@ function gpuInfoItems(gpu: GpuInfo): GPUItem[] {
                     vscode.TreeItemCollapsibleState.None,
                     GPUTreeItemType.GPUInfoItem,
                     itemDescription(infoId, gpu[infoId]),
+                    NVIDIA_SMI_FIELDS[infoId].iconPath,
                 )
             );
         }
@@ -64,6 +65,7 @@ function gpusInfo(info: NvidiaSmiInfo): GPUItem[] {
         vscode.TreeItemCollapsibleState.Collapsed,
         GPUTreeItemType.GPUItem,
         valueOr(gpuDescId ? gpu[gpuDescId] : undefined, ""),
+        undefined,
         gpuInfoItems(gpu),
     ));
 }
