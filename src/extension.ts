@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { NvidiaSmiService } from './gpu-info-service'
+import { NvidiaSmiService, openAsJsonFile } from './gpu-info-service'
 import { GPUInfoProvider } from './gpu-treeview';
 
 let nvidiaSmiService: NvidiaSmiService | undefined;
@@ -29,6 +29,10 @@ export async function activate(context: vscode.ExtensionContext) {
 		'nvidia-smi-plus.disable-auto-refresh', () => setAutoRefresh(false));
 	context.subscriptions.push(nvidiaDisableAutoRefreshCmd);
 
+	const nvidiaOpenJsonCmd = vscode.commands.registerCommand(
+		"nvidia-smi-plus.open-json", () => openAsJsonFile());
+	context.subscriptions.push(nvidiaOpenJsonCmd);
+
 	const gpuInfoProvider = new GPUInfoProvider();
 	nvidiaSmiService.onDidInfoAquired(gpuInfoProvider.refresh, gpuInfoProvider);
 	vscode.window.registerTreeDataProvider(
@@ -46,7 +50,6 @@ export async function activate(context: vscode.ExtensionContext) {
 	});
 	context.subscriptions.push(configChange);
 
-	context.extension.exports
 
 	await vscode.commands.executeCommand('nvidia-smi-plus.refresh');
 }

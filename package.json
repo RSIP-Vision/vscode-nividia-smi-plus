@@ -77,6 +77,12 @@
     },
     "commands": [
       {
+        "command": "nvidia-smi-plus.open-json",
+        "title": "Open nvidia-smi output as JSON",
+        "category": "nvidia-smi+",
+        "icon": "$(output-view-icon)"
+      },
+      {
         "command": "nvidia-smi-plus.refresh",
         "title": "Refresh",
         "category": "nvidia-smi+",
@@ -118,16 +124,21 @@
         {
           "command": "nvidia-smi-plus.refresh",
           "when": "view == nvidia-gpus",
-          "group": "navigation"
+          "group": "navigation@1"
         },
         {
           "command": "nvidia-smi-plus.enable-auto-refresh",
           "when": "view == nvidia-gpus && !config.nvidia-smi-plus.refresh.autoRefresh",
-          "group": "navigation"
+          "group": "navigation@2"
         },
         {
           "command": "nvidia-smi-plus.disable-auto-refresh",
           "when": "view == nvidia-gpus && config.nvidia-smi-plus.refresh.autoRefresh",
+          "group": "navigation@3"
+        },
+        {
+          "command": "nvidia-smi-plus.open-json",
+          "when": "view == nvidia-gpus",
           "group": "navigation"
         }
       ]

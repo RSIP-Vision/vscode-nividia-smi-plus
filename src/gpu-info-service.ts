@@ -136,13 +136,8 @@ export class NvidiaSmiService implements vscode.Disposable {
     }
 
     async currentNvidiaStatus(): Promise<NvidiaSmiInfo | undefined> {
-        const child = spawn("nvidia-smi", ["-q", "-x"]);
-        let xmlData = '';
-        for await (const data of child.stdout) {
-            xmlData += data.toString();
-        };
         try {
-            const jsonObj = parser.parse(xmlData, {}, true);
+            const jsonObj = await nvidiaSmiAsJsonObject();
             const gpus: GpuInfo[] = [];
             for (const [gpuId, gpuInfo] of jsonObj.nvidia_smi_log.gpu.entries()) {
                 const gpuInfoFields: Record<string, any> = {};
@@ -167,4 +162,27 @@ export class NvidiaSmiService implements vscode.Disposable {
             this._updateInfoJob.stop();
         }
     }
+}
+
+export async function nvidiaSmiAsJsonObject()
+{
+    const child = spawn("nvidia-smi", ["-q", "-x"]);
+    let xmlData = '';
+    for await (const data of child.stdout) {
+        xmlData += data.toString();
+    };
+    const jsonObj = parser.parse(xmlData, {}, true);
+    return jsonObj;
+}
+
+export async function openAsJsonFile()
+{
+    const jsonObj = await nvidiaSmiAsJsonObject();
+
+    const fileName = 'nvidia-smi.json';
+    const newUri = vscode.Uri.file(fileName).with({ scheme: 'untitled', path: fileName });
+
+    const document = await vscode.workspace.openTextDocument(newUri);
+    const textEdit = await vscode.window.showTextDocument(document);
+    await textEdit.edit(edit => edit.insert(new vscode.Position(0, 0), JSON.stringify(jsonObj, undefined, 4)));    
 }
