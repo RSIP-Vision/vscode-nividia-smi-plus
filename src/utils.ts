@@ -19,7 +19,3 @@ export function shallowEqual(object1: any, object2: any) {
 export function replaceAll(string: string, search: string | RegExp, replace: string) {
     return string.split(search).join(replace);
 }
-
-export function valueOr<T>(val: T | undefined, or: T): T {
-    return val ? val : or;
-}

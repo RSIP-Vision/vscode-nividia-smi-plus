@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import { NvidiaSmiInfo, NvidiaSmiEvent, GpuInfo, NVIDIA_SMI_FIELDS } from './gpu-info-service'
-import { valueOr } from './utils';
 
 
 enum GPUTreeItemType {
@@ -15,7 +14,7 @@ class GPUItem extends vscode.TreeItem {
         public readonly collapsibleState: vscode.TreeItemCollapsibleState,
         public readonly itemType: GPUTreeItemType,
         public readonly description: string = "",
-        public readonly iconPath?: vscode.Uri | string,        
+        public readonly iconPath?: vscode.Uri | string,
         public readonly nestedItems: GPUItem[] = [],
     ) {
         super(label, collapsibleState);
@@ -33,9 +32,9 @@ function itemDescription(itemId: string, itemValue: any): string {
 }
 
 function gpuInfoItems(gpu: GpuInfo): GPUItem[] {
-    const infoItemsToShow = vscode.workspace.getConfiguration(
-        'nvidia-smi-plus'
-    ).get<string[]>('view.gpuItems');
+    const infoItemsToShow = vscode.workspace
+        .getConfiguration('nvidia-smi-plus')
+        .get<string[]>('view.gpuItems');
 
     if (!infoItemsToShow) {
         return [];
@@ -58,13 +57,13 @@ function gpuInfoItems(gpu: GpuInfo): GPUItem[] {
 }
 
 function gpusInfo(info: NvidiaSmiInfo): GPUItem[] {
-    const gpuDescId = vscode.workspace.getConfiguration('nvidia-smi-plus').get<string>('view.gpuDesc');
+    const gpuMainDescription = vscode.workspace.getConfiguration('nvidia-smi-plus').get<string>('view.gpuMainDescription');
 
     return info.gpus.map(gpu => new GPUItem(
         `GPU ${gpu.id}`,
         vscode.TreeItemCollapsibleState.Collapsed,
         GPUTreeItemType.GPUItem,
-        valueOr(gpuDescId ? gpu[gpuDescId] : undefined, ""),
+        (gpuMainDescription ? gpu[gpuMainDescription] : undefined) ?? "",
         undefined,
         gpuInfoItems(gpu),
     ));
