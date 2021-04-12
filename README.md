@@ -19,13 +19,10 @@ Provides a view on Nvidia's GPUs. It utilize the `nvidia-smi` tool to extract th
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
+* `nvidia-smi-plus.executablePath`: configure where the nvidia-smi executable is located
 * `nvidia-smi-plus.refresh.autoRefresh`: enable/disable auto fetching GPUs information
 * `nvidia-smi-plus.refresh.timeInterval`: time interval in seconds to fetch information
-* `nvidia-smi-plus.view.gpuDesc`: main information field to show next to the GPU id. see [Available information fields](#Available-information-fields)
+* `nvidia-smi-plus.view.gpuMainDescription`: main information field to show next to the GPU id. see [Available information fields](#Available-information-fields)
 * `nvidia-smi-plus.view.gpuItems`: fields to show under each GPU. see [Available information fields](#Available-information-fields)
