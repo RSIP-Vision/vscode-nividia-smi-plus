@@ -166,7 +166,10 @@ export class NvidiaSmiService implements vscode.Disposable {
 }
 
 export async function nvidiaSmiAsJsonObject() {
-    const child = spawn("nvidia-smi", ["-q", "-x"]);
+    const extConfig = vscode.workspace.getConfiguration('nvidia-smi-plus');
+    const exec = extConfig.get<string>("executablePath") ?? "nvidia-smi";
+
+    const child = spawn(exec, ["-q", "-x"]);
     let xmlData = '';
     for await (const data of child.stdout) {
         xmlData += data.toString();

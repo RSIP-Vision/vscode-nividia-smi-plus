@@ -21,6 +21,11 @@
     "configuration": {
       "title": "nvidia-smi+",
       "properties": {
+        "nvidia-smi-plus.executablePath": {
+          "type": "string",
+          "title": "nvidia-smi Path",
+          "default": "nvidia-smi"
+        },
         "nvidia-smi-plus.refresh.autoRefresh": {
           "type": "boolean",
           "title": "Auto Refesh",
@@ -34,7 +39,7 @@
           "maximum": 3600,
           "markdownDescription": "Controls the refresh time interval in seconds. Only applies when `#nvidia-smi-plus.refresh.autoRefresh#` is set to `true`."
         },
-        "nvidia-smi-plus.view.gpuDesc": {
+        "nvidia-smi-plus.view.gpuMainDescription": {
           "type": "string",
           "enum": [
             "product_name",
