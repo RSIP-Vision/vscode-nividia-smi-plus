@@ -15,7 +15,7 @@
     "url": "https://github.com/RSIP-Vision/vscode-nividia-smi-plus"
   },
   "description": "Watch Nvidia GPUs state on your machine",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "preview": true,
   "engines": {
     "vscode": "^1.55.0"
