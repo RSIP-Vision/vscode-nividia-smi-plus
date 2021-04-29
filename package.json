@@ -1,12 +1,22 @@
 {
   "name": "nvidia-smi-plus",
   "displayName": "nvidia-smi+",
-  "publisher": "elazarcoh",
-  "repository": {
-    "url": "https://github.com/elazarcoh/vscode-nividia-smi-plus"
+  "publisher": "RSIP-Vision",
+  "author": {
+    "name": "Elazar",
+    "email": "elazar@rsipvision.com"
   },
-  "description": "",
-  "version": "0.0.1",
+  "keywords": [
+    "nvidia-smi",
+    "gpu",
+    "monitor"
+  ],
+  "repository": {
+    "url": "https://github.com/RSIP-Vision/vscode-nividia-smi-plus"
+  },
+  "description": "Watch Nvidia GPUs state on your machine",
+  "version": "0.0.2",
+  "preview": true,
   "engines": {
     "vscode": "^1.55.0"
   },
@@ -57,7 +67,7 @@
         "nvidia-smi-plus.view.gpuItems": {
           "type": "array",
           "title": "GPU Information",
-          "description": "Configure which information will be shown on the view",
+          "description": "Configure which information will be shown on the view. see https://github.com/RSIP-Vision/vscode-nividia-smi-plus#available-information-fields for the complete list.",
           "items": {
             "type": "string",
             "enum": [
