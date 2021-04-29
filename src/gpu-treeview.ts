@@ -3,8 +3,8 @@ import { NvidiaSmiInfo, NvidiaSmiEvent, GpuInfo, NVIDIA_SMI_FIELDS } from './gpu
 
 
 enum GPUTreeItemType {
-    GPUItem = "GPUItem",
-    GPUInfoItem = "GPUInfoItem",
+    gpuItem = "GPUItem",
+    gpuInfoItem = "GPUInfoItem",
 }
 
 class GPUItem extends vscode.TreeItem {
@@ -46,7 +46,7 @@ function gpuInfoItems(gpu: GpuInfo): GPUItem[] {
                 new GPUItem(
                     itemLabel(infoId, gpu[infoId]),
                     vscode.TreeItemCollapsibleState.None,
-                    GPUTreeItemType.GPUInfoItem,
+                    GPUTreeItemType.gpuInfoItem,
                     itemDescription(infoId, gpu[infoId]),
                     NVIDIA_SMI_FIELDS[infoId].iconPath,
                 )
@@ -62,7 +62,7 @@ function gpusInfo(info: NvidiaSmiInfo): GPUItem[] {
     return info.gpus.map(gpu => new GPUItem(
         `GPU ${gpu.id}`,
         vscode.TreeItemCollapsibleState.Collapsed,
-        GPUTreeItemType.GPUItem,
+        GPUTreeItemType.gpuItem,
         (gpuMainDescription ? gpu[gpuMainDescription] : undefined) ?? "",
         undefined,
         gpuInfoItems(gpu),
@@ -88,17 +88,22 @@ export class GPUInfoProvider implements vscode.TreeDataProvider<GPUItem> {
     }
 
     getChildren(element?: GPUItem): Thenable<GPUItem[]> {
-        if (!element)
-            if (this._currentInfo)
+        if (!element) {
+            if (this._currentInfo) {
                 return Promise.resolve(gpusInfo(this._currentInfo));
-            else
+            }
+            else {
                 return Promise.resolve([]);
+            }
+        }
 
-        else if (element.itemType === GPUTreeItemType.GPUItem)
+        else if (element.itemType === GPUTreeItemType.gpuItem) {
             return Promise.resolve(element.nestedItems);
+        }
 
-        else
+        else {
             return Promise.resolve([]);
+        }
 
     }
 }

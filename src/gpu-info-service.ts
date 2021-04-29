@@ -88,22 +88,22 @@ function asCronTime(seconds: number) {
 type RefreshConfig = {
     autoRefresh: boolean
     refreshInterval: number
-}
+};
 function refreshConfiguration(): RefreshConfig {
     const extConfig = vscode.workspace.getConfiguration('nvidia-smi-plus');
 
-    const autoRefresh = extConfig.get<boolean>('refresh.autoRefresh')
+    const autoRefresh = extConfig.get<boolean>('refresh.autoRefresh');
     const seconds = extConfig.get<number>('refresh.timeInterval');
     return {
         autoRefresh: Boolean(autoRefresh),
         refreshInterval: seconds ? seconds : 0,
-    }
+    };
 
 }
 
 export class NvidiaSmiService implements vscode.Disposable {
     private _updateInfoJob: CronJob | undefined;
-    private _currentRefereshSettings: RefreshConfig | undefined;
+    private _currentRefreshSettings: RefreshConfig | undefined;
 
     constructor() {
         this.setAutoUpdate();
@@ -111,11 +111,11 @@ export class NvidiaSmiService implements vscode.Disposable {
 
     setAutoUpdate() {
         const currentConfig = refreshConfiguration();
-        if (!this._currentRefereshSettings || !shallowEqual(this._currentRefereshSettings, currentConfig)) {
-            this._currentRefereshSettings = currentConfig;
+        if (!this._currentRefreshSettings || !shallowEqual(this._currentRefreshSettings, currentConfig)) {
+            this._currentRefreshSettings = currentConfig;
             this._updateInfoJob?.stop();
-            if (this._currentRefereshSettings.autoRefresh) {
-                const seconds = this._currentRefereshSettings.refreshInterval;
+            if (this._currentRefreshSettings.autoRefresh) {
+                const seconds = this._currentRefreshSettings.refreshInterval;
                 this._updateInfoJob = new CronJob(asCronTime(seconds), () => this.update());
                 if (!this._updateInfoJob.running) {
                     this._updateInfoJob.start();
@@ -124,15 +124,15 @@ export class NvidiaSmiService implements vscode.Disposable {
         }
     }
 
-    private readonly _onDidInfoAquired = new vscode.EventEmitter<NvidiaSmiEvent>();
-    readonly onDidInfoAquired = this._onDidInfoAquired.event;
+    private readonly _onDidInfoAcquired = new vscode.EventEmitter<NvidiaSmiEvent>();
+    readonly onDidInfoAcquired = this._onDidInfoAcquired.event;
 
     private _currentState: NvidiaSmiInfo | undefined;
 
     async update(): Promise<void> {
         this._currentState = await this.currentNvidiaStatus();
         if (this._currentState) {
-            this._onDidInfoAquired.fire({ info: this._currentState });
+            this._onDidInfoAcquired.fire({ info: this._currentState });
         }
     }
 
@@ -154,7 +154,7 @@ export class NvidiaSmiService implements vscode.Disposable {
                 gpus: gpus,
             };
         } catch (error) {
-            console.log(error.message)
+            console.log(error.message);
         }
     }
 
@@ -177,8 +177,9 @@ export async function nvidiaSmiAsJsonObject() {
     const jsonObj = parser.parse(xmlData, {}, true);
 
     // for a system with a single GPU
-    if (!Array.isArray(jsonObj.nvidia_smi_log.gpu))
+    if (!Array.isArray(jsonObj.nvidia_smi_log.gpu)) {
         jsonObj.nvidia_smi_log.gpu = [jsonObj.nvidia_smi_log.gpu];
+    }
 
     return jsonObj;
 }

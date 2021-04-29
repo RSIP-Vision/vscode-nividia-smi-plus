@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 
-import { NvidiaSmiService, openAsJsonFile } from './gpu-info-service'
+import { NvidiaSmiService, openAsJsonFile } from './gpu-info-service';
 import { GPUInfoProvider } from './gpu-treeview';
 
 let nvidiaSmiService: NvidiaSmiService | undefined;
@@ -34,7 +34,7 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(nvidiaOpenJsonCmd);
 
 	const gpuInfoProvider = new GPUInfoProvider();
-	nvidiaSmiService.onDidInfoAquired(gpuInfoProvider.refresh, gpuInfoProvider);
+	nvidiaSmiService.onDidInfoAcquired(gpuInfoProvider.refresh, gpuInfoProvider);
 	vscode.window.registerTreeDataProvider(
 		'nvidia-gpus',
 		gpuInfoProvider

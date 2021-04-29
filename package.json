@@ -28,7 +28,7 @@
         },
         "nvidia-smi-plus.refresh.autoRefresh": {
           "type": "boolean",
-          "title": "Auto Refesh",
+          "title": "Auto Refresh",
           "default": true
         },
         "nvidia-smi-plus.refresh.timeInterval": {
