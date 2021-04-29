@@ -3,61 +3,9 @@ import * as vscode from 'vscode';
 var parser = require('fast-xml-parser');
 import { spawn } from 'child_process';
 import { CronJob } from 'cron';
-import { shallowEqual, replaceAll } from './utils';
+import { shallowEqual } from './utils';
+import { NVIDIA_SMI_FIELDS, resolveGpuInfoField } from './nvidia-smi-fields';
 
-enum InfoFieldType {
-    Expr,
-    Value,
-}
-class InfoField {
-    constructor(
-        public readonly type: InfoFieldType,
-        public readonly label: string,
-        public readonly accessor: string[] | string,
-        public readonly depends?: string[],
-        public readonly iconPath?: vscode.Uri | string,
-    ) { }
-}
-
-// for `Expr` Field, the order is sinificant. you can't refernce a field that has not beed calculated yet.
-export const NVIDIA_SMI_FIELDS: Record<string, InfoField> = {
-    gpu_temp: new InfoField(InfoFieldType.Value, 'GPU Temperature', ['temperature', 'gpu_temp']),
-    gpu_util: new InfoField(InfoFieldType.Value, 'GPU Utilization', ['utilization', 'gpu_util']),
-    memory_util: new InfoField(InfoFieldType.Value, 'Memory Utilization', ['utilization', 'memory_util']),
-    memory_total: new InfoField(InfoFieldType.Value, 'Total memory', ['fb_memory_usage', 'total']),
-    memory_free: new InfoField(InfoFieldType.Value, 'Free memory', ['fb_memory_usage', 'free']),
-    memory_used: new InfoField(InfoFieldType.Value, 'Used memory', ['fb_memory_usage', 'used']),
-    memory_used_percent: new InfoField(
-        InfoFieldType.Expr,
-        "Memory Used (%)",
-        '`${Math.trunc(("{memory_used}").replace(" MiB", "") / ("{memory_total}").replace(" MiB", "") * 100)} %`',
-        ['memory_used', 'memory_total']),
-
-    fan_speed: new InfoField(InfoFieldType.Value, "Fan speed", ['fan_speed']),
-    product_name: new InfoField(InfoFieldType.Value, "Produc Name", ['product_name']),
-};
-
-function resolveGpuInfoField(gpuInfo: any, field: InfoField, values: Record<string, any>): any {
-    switch (field.type) {
-        case InfoFieldType.Value:
-            let val = gpuInfo;
-            for (const key of field.accessor) val = val[key];
-            return val;
-        case InfoFieldType.Expr:
-            if (typeof field.accessor !== 'string') return "!Error!";
-            let str = field.accessor;
-            field.depends?.forEach(name => {
-                str = replaceAll(str, `{${name}}`, `${values[name]}`);
-            });
-            try {
-                const value = eval(str);
-                return value;
-            } catch (err) {
-                console.log(`evaluation failed`, err);
-                return undefined;
-            }
-    }
-}
 
 export type GpuInfo = {
     id: number;

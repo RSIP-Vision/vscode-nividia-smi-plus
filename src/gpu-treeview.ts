@@ -1,5 +1,6 @@
 import * as vscode from 'vscode';
-import { NvidiaSmiInfo, NvidiaSmiEvent, GpuInfo, NVIDIA_SMI_FIELDS } from './gpu-info-service'
+import { NvidiaSmiInfo, NvidiaSmiEvent, GpuInfo } from './gpu-info-service';
+import { NVIDIA_SMI_FIELDS } from './nvidia-smi-fields';
 
 
 enum GPUTreeItemType {
