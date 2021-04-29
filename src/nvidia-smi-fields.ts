@@ -50,7 +50,7 @@ export function resolveGpuInfoField(gpuInfo: any, field: InfoField, values: Reco
                 str = replaceAll(str, `{${name}}`, `${values[name]}`);
             });
             try {
-                const value = eval(str);
+                const value = (0, eval)(str);
                 return value;
             } catch (err) {
                 console.log(`evaluation failed`, err);
