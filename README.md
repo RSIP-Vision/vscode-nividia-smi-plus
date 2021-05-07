@@ -17,6 +17,10 @@ Provides a view on Nvidia's GPUs. It utilize the `nvidia-smi` tool to extract th
 * `memory_used`: displays the GPU's used memory amount
 * `memory_used_percent`: displays the GPU's used memory (percents)
 
+#### Note for users
+If you want more fields, please fill a feature-request issue (please use the *feature request* label).
+The field can be anything reported by the *nvidia-smi* tool. You can see all the fields with the export to JSON button (near the "auto refresh" toggle button).   
+
 ## Extension Settings
 
 This extension contributes the following settings:
