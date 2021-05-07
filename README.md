@@ -2,6 +2,8 @@
 
 Provides a view on Nvidia's GPUs. It utilize the `nvidia-smi` tool to extract the information.
 
+![image](https://user-images.githubusercontent.com/81901729/117412831-e7097080-af1d-11eb-8736-37a493735db7.png)
+
 * Highly customizable
 * Automatic refresh (optionally)
 
