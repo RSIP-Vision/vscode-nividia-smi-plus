@@ -6,6 +6,7 @@
     "name": "Elazar",
     "email": "elazar@rsipvision.com"
   },
+  "icon": "icon.png",
   "keywords": [
     "nvidia-smi",
     "gpu",
@@ -16,7 +17,6 @@
   },
   "description": "Watch Nvidia GPUs state on your machine",
   "version": "0.1.0",
-  "preview": true,
   "engines": {
     "vscode": "^1.55.0"
   },
@@ -185,7 +185,7 @@
     "@types/vscode": "^1.55.0",
     "@typescript-eslint/eslint-plugin": "^4.14.1",
     "@typescript-eslint/parser": "^4.14.1",
-    "esbuild": "^0.11.16",
+    "esbuild": "^0.11.23",
     "eslint": "^7.19.0",
     "glob": "^7.1.6",
     "mocha": "^8.2.1",
