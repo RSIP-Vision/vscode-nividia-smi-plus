@@ -10,5 +10,6 @@
     "typescript.tsc.autoDetect": "off",
     "cSpell.words": [
         "treeview"
-    ]
+    ],
+    "npm.packageManager": "yarn"
 }
