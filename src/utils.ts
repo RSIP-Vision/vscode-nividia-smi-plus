@@ -1,5 +1,5 @@
 
-export function shallowEqual(object1: any, object2: any) {
+export function shallowEqual(object1: Record<string, unknown>, object2: Record<string, unknown>): boolean {
     const keys1 = Object.keys(object1);
     const keys2 = Object.keys(object2);
 
@@ -7,7 +7,7 @@ export function shallowEqual(object1: any, object2: any) {
         return false;
     }
 
-    for (let key of keys1) {
+    for (const key of keys1) {
         if (object1[key] !== object2[key]) {
             return false;
         }
@@ -16,6 +16,6 @@ export function shallowEqual(object1: any, object2: any) {
     return true;
 }
 
-export function replaceAll(string: string, search: string | RegExp, replace: string) {
+export function replaceAll(string: string, search: string | RegExp, replace: string): string {
     return string.split(search).join(replace);
 }

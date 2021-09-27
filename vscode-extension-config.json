@@ -1,0 +1,10 @@
+{
+    "prefix": "nvidia-smi-plus",
+    "targetFile": "package.json",
+    "configurations": [
+        {
+            "filePath": "./src/config.ts",
+            "name": "Config"
+        }
+    ]
+}

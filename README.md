@@ -7,6 +7,8 @@ Provides a view on Nvidia's GPUs. It utilize the `nvidia-smi` tool to extract th
 * Highly customizable
 * Automatic refresh (optionally)
 
+Note: this extension has no affiliation with the Nvidia corp.
+
 ## Available information fields:
 
 * `product_name`: displays the Product name
