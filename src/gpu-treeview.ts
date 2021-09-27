@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { getConfiguration } from "./config";
+import { configurations } from "./config";
 import { NvidiaSmiInfo, NvidiaSmiEvent, GpuInfo } from "./gpu-info-service";
 import { NVIDIA_SMI_FIELDS } from "./nvidia-smi-fields";
 
@@ -22,7 +22,7 @@ class GPUItem extends vscode.TreeItem {
   }
 }
 
-function itemLabel(itemId: string, itemValue: any): string {
+function itemLabel(itemId: string, _itemValue: any): string {
   const field = NVIDIA_SMI_FIELDS[itemId];
   return `${field.label}`;
 }
@@ -32,7 +32,7 @@ function itemDescription(itemId: string, itemValue: any): string {
 }
 
 function gpuInfoItems(gpu: GpuInfo): GPUItem[] {
-  const infoItemsToShow = getConfiguration("view.gpuItems");
+  const infoItemsToShow = configurations.get("view.gpuItems");
 
   if (!infoItemsToShow) {
     return [];
@@ -54,7 +54,7 @@ function gpuInfoItems(gpu: GpuInfo): GPUItem[] {
 }
 
 function gpusInfo(info: NvidiaSmiInfo): GPUItem[] {
-  const gpuMainDescription = getConfiguration("view.gpuMainDescription");
+  const gpuMainDescription = configurations.get("view.gpuMainDescription");
 
   return info.gpus.map(
     (gpu) =>
@@ -77,7 +77,7 @@ export class GPUInfoProvider implements vscode.TreeDataProvider<GPUItem> {
 
   private _currentInfo: NvidiaSmiInfo | undefined;
 
-  refresh(event: NvidiaSmiEvent) {
+  refresh(event: NvidiaSmiEvent): void {
     this._currentInfo = event.info;
     this._onDidChangeTreeData.fire(undefined);
   }

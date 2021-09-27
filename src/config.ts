@@ -49,5 +49,4 @@ export interface Config {
 }
 
 const configSection = "nvidia-smi-plus";
-export const getConfiguration =
-  configUtils.ConfigurationGetter<Config>(configSection);
+export const configurations = new configUtils.VSCodeConfigurations<Config>(configSection);

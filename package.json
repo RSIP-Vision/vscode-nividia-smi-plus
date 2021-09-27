@@ -193,6 +193,6 @@
   "dependencies": {
     "cron": "^1.8.2",
     "fast-xml-parser": "^3.19.0",
-    "vscode-extensions-json-generator": "D:\\elazar\\private\\vscode-extension-config"
+    "vscode-extensions-json-generator": "^0.1.1"
   }
 }

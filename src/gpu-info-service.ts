@@ -5,7 +5,7 @@ import { spawn } from "child_process";
 import { CronJob } from "cron";
 import { shallowEqual } from "./utils";
 import { NVIDIA_SMI_FIELDS, resolveGpuInfoField } from "./nvidia-smi-fields";
-import { getConfiguration } from "./config";
+import { configurations } from "./config";
 
 export type GpuInfo = {
   id: number;
@@ -37,8 +37,8 @@ type RefreshConfig = {
   refreshInterval: number;
 };
 function refreshConfiguration(): RefreshConfig {
-  const autoRefresh = getConfiguration("refresh.autoRefresh");
-  const seconds = getConfiguration("refresh.timeInterval");
+  const autoRefresh = configurations.get("refresh.autoRefresh");
+  const seconds = configurations.get("refresh.timeInterval");
   return {
     autoRefresh: Boolean(autoRefresh),
     refreshInterval: seconds ? seconds : 0,
@@ -53,7 +53,7 @@ export class NvidiaSmiService implements vscode.Disposable {
     this.setAutoUpdate();
   }
 
-  setAutoUpdate() {
+  setAutoUpdate(): void {
     const currentConfig = refreshConfiguration();
     if (
       !this._currentRefreshSettings ||
@@ -112,15 +112,15 @@ export class NvidiaSmiService implements vscode.Disposable {
     }
   }
 
-  dispose() {
+  dispose(): void {
     if (this._updateInfoJob?.running) {
       this._updateInfoJob.stop();
     }
   }
 }
 
-export async function nvidiaSmiAsJsonObject() {
-  const exec = getConfiguration("executablePath") ?? "nvidia-smi";
+export async function nvidiaSmiAsJsonObject(): Promise<any> {
+  const exec = configurations.get("executablePath", undefined, "nvidia-smi");
 
   const child = spawn(exec, ["-q", "-x"]);
   let xmlData = "";
@@ -137,7 +137,7 @@ export async function nvidiaSmiAsJsonObject() {
   return jsonObj;
 }
 
-export async function openAsJsonFile() {
+export async function openAsJsonFile(): Promise<void> {
   const jsonObj = await nvidiaSmiAsJsonObject();
 
   const fileName = "nvidia-smi.json";
