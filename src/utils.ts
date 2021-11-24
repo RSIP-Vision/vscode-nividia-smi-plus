@@ -19,3 +19,11 @@ export function shallowEqual(object1: Record<string, unknown>, object2: Record<s
 export function replaceAll(string: string, search: string | RegExp, replace: string): string {
     return string.split(search).join(replace);
 }
+
+export type json =
+  | string
+  | number
+  | boolean
+  | null
+  | json[]
+  | { [key: string]: json }

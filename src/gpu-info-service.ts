@@ -3,13 +3,20 @@ import * as vscode from "vscode";
 import parser = require("fast-xml-parser");
 import { spawn } from "child_process";
 import { CronJob } from "cron";
-import { shallowEqual } from "./utils";
+import { json, shallowEqual } from "./utils";
 import { NVIDIA_SMI_FIELDS, resolveGpuInfoField } from "./nvidia-smi-fields";
 import { configurations } from "./config";
 
+
+type NvidiaSmiInfoJson = {
+  nvidia_smi_log: {
+    gpu: json[]
+  }
+}
+
 export type GpuInfo = {
   id: number;
-  [key: string]: any;
+  [key: string]: string | number;
 };
 
 export type NvidiaSmiInfo = {
@@ -91,13 +98,13 @@ export class NvidiaSmiService implements vscode.Disposable {
       const jsonObj = await nvidiaSmiAsJsonObject();
       const gpus: GpuInfo[] = [];
       for (const [gpuId, gpuInfo] of jsonObj.nvidia_smi_log.gpu.entries()) {
-        const gpuInfoFields: Record<string, any> = {};
+        const gpuInfoFields: Record<string, number | string> = {};
         for (const [name, field] of Object.entries(NVIDIA_SMI_FIELDS)) {
           gpuInfoFields[name] = resolveGpuInfoField(
             gpuInfo,
             field,
             gpuInfoFields
-          );
+          ) ?? "null";
         }
         gpus.push({
           id: gpuId,
@@ -119,7 +126,7 @@ export class NvidiaSmiService implements vscode.Disposable {
   }
 }
 
-export async function nvidiaSmiAsJsonObject(): Promise<any> {
+export async function nvidiaSmiAsJsonObject(): Promise<NvidiaSmiInfoJson> {
   const exec = configurations.get("executablePath", undefined, "nvidia-smi");
 
   const child = spawn(exec, ["-q", "-x"]);
@@ -127,7 +134,7 @@ export async function nvidiaSmiAsJsonObject(): Promise<any> {
   for await (const data of child.stdout) {
     xmlData += data.toString();
   }
-  const jsonObj = parser.parse(xmlData, {}, true);
+  const jsonObj: NvidiaSmiInfoJson = parser.parse(xmlData, {}, true);
 
   // for a system with a single GPU
   if (!Array.isArray(jsonObj.nvidia_smi_log.gpu)) {

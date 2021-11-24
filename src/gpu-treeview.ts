@@ -22,12 +22,12 @@ class GPUItem extends vscode.TreeItem {
   }
 }
 
-function itemLabel(itemId: string, _itemValue: any): string {
+function itemLabel(itemId: string, _itemValue: string | number): string {
   const field = NVIDIA_SMI_FIELDS[itemId];
   return `${field.label}`;
 }
 
-function itemDescription(itemId: string, itemValue: any): string {
+function itemDescription(itemId: string, itemValue: string | number): string {
   return `${itemValue}`;
 }
 
@@ -62,7 +62,7 @@ function gpusInfo(info: NvidiaSmiInfo): GPUItem[] {
         `GPU ${gpu.id}`,
         vscode.TreeItemCollapsibleState.Collapsed,
         GPUTreeItemType.gpuItem,
-        (gpuMainDescription ? gpu[gpuMainDescription] : undefined) ?? "",
+        (gpuMainDescription ? itemDescription(gpuMainDescription, gpu[gpuMainDescription]) : undefined) ?? "",
         undefined,
         gpuInfoItems(gpu)
       )

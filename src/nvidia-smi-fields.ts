@@ -1,7 +1,7 @@
 // keep the NVIDIA_SMI_FIELDS records in snake_case to match the configuration style
 /* eslint-disable @typescript-eslint/naming-convention */
 import * as vscode from 'vscode';
-import { replaceAll } from './utils';
+import { json, replaceAll } from './utils';
 
 enum InfoFieldType {
     expr,
@@ -37,12 +37,27 @@ export const NVIDIA_SMI_FIELDS: Record<string, InfoField> = {
 };
 
 
-export function resolveGpuInfoField(gpuInfo: any, field: InfoField, values: Record<string, any>): any {
+export function resolveGpuInfoField(gpuInfo: json, field: InfoField, values: Record<string, string | number>): string | number | undefined {
     switch (field.type) {
         case InfoFieldType.value:
             let val = gpuInfo;
-            for (const key of field.accessor) { val = val[key]; }
-            return val;
+            for (const key of field.accessor) {
+                try {
+                    // @ts-expect-error. The accessor should be valid by definition.
+                    val = val[key];
+                }
+                catch (e) {
+                    console.log(`evaluation failed`, e);
+                    return undefined;
+                }
+            }
+            if(typeof val === 'string' || typeof val === 'number') {
+                return val;
+            }
+            else {
+                console.log(`evaluation failed`, "expected a number or string");
+                return undefined;
+            }
         case InfoFieldType.expr:
             if (typeof field.accessor !== 'string') { return "!Error!"; }
             let str = field.accessor;
