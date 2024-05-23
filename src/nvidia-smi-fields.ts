@@ -1,6 +1,5 @@
 // keep the NVIDIA_SMI_FIELDS records in snake_case to match the configuration style
 /* eslint-disable @typescript-eslint/naming-convention */
-import * as vscode from 'vscode';
 import { json, replaceAll } from './utils';
 
 enum InfoFieldType {
@@ -14,7 +13,7 @@ export class InfoField {
         public readonly label: string,
         public readonly accessor: string[] | string,
         public readonly depends?: string[],
-        public readonly iconPath?: vscode.Uri | string,
+        public readonly iconPath?: string,
     ) { }
 }
 
@@ -36,6 +35,22 @@ export const NVIDIA_SMI_FIELDS: Record<string, InfoField> = {
     product_name: new InfoField(InfoFieldType.value, "Product Name", ['product_name']),
 };
 
+
+// for `Expr` Field, the order is significant. you can't reference a field that has not beed calculated yet.
+export const ROCM_SMI_FIELDS: Record<string, InfoField> = {
+    gpu_temp: new InfoField(InfoFieldType.value, 'GPU Temperature', ['Temperature (Sensor edge) (C)']),
+    gpu_util: new InfoField(InfoFieldType.value, 'GPU Utilization', ['GPU use (%)']),
+    memory_util: new InfoField(InfoFieldType.value, 'Memory Utilization', ['GPU memory use (%)']),
+    memory_total: new InfoField(InfoFieldType.value, 'Total memory', ['VRAM Total Memory (B)']),
+    memory_used: new InfoField(InfoFieldType.value, 'Used memory', ['VRAM Total Used Memory (B)']),
+    memory_used_percent: new InfoField(
+        InfoFieldType.expr,
+        "Memory Used (%)",
+        '`${Math.trunc(("{memory_used}") / ("{memory_total}") * 100)} %`',
+        ['memory_used', 'memory_total']),
+    fan_speed: new InfoField(InfoFieldType.value, "Fan speed", ['Fan speed (%)']),
+    product_name: new InfoField(InfoFieldType.value, "Product Name", ['Card series']),
+};
 
 export function resolveGpuInfoField(gpuInfo: json, field: InfoField, values: Record<string, string | number>): string | number | undefined {
     switch (field.type) {
