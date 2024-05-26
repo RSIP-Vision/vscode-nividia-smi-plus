@@ -112,9 +112,9 @@ export class RocmSmiService extends SmiService {
       const jsonObj: json = await rocmSmiAsJsonObject();
       const gpus: GpuInfo[] = [];
       for (let [gpuId, gpuInfo] of Object.entries(jsonObj!)) {
-        if (!gpuId.includes("card")) 
+        if (!gpuId.includes("card"))
           continue
-        
+
         const gpuInfoFields: Record<string, number | string> = {};
         for (const [name, field] of Object.entries(ROCM_SMI_FIELDS)) {
           gpuInfoFields[name] = resolveGpuInfoField(
@@ -207,9 +207,18 @@ export async function nvidiaSmiAsJsonObject(): Promise<NvidiaSmiInfoJson> {
 }
 
 export async function openAsJsonFile(): Promise<void> {
-  const jsonObj = await nvidiaSmiAsJsonObject();
+  const exec = configurations.get("executablePath", undefined, "");
+  let jsonObj: json;
+  let fileName;
+  if (exec.includes("rocm")) {
+    jsonObj = await rocmSmiAsJsonObject()
+    fileName = "rocm-smi.json";
+  }
+  else {
+    jsonObj = await nvidiaSmiAsJsonObject();
+    fileName = "nvidia-smi.json";
+  }
 
-  const fileName = "nvidia-smi.json";
   const newUri = vscode.Uri.file(fileName).with({
     scheme: "untitled",
     path: fileName,
