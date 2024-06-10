@@ -1,25 +1,29 @@
 import * as vscode from "vscode";
 import { configurations } from "./config";
-
-import { NvidiaSmiService, openAsJsonFile } from "./gpu-info-service";
+import { SmiService, NvidiaSmiService, RocmSmiService, openAsJsonFile } from "./gpu-info-service";
 import { GPUInfoProvider } from "./gpu-treeview";
 
-let nvidiaSmiService: NvidiaSmiService | undefined;
+let smiService: SmiService | undefined;
 
 export function updateNvidiaInfo(): void {
-  nvidiaSmiService?.update();
+  smiService?.update();
 }
 
 export async function setAutoRefresh(value: boolean): Promise<void> {
   await configurations.update("refresh.autoRefresh", value);
-  nvidiaSmiService?.setAutoUpdate();
+  smiService?.setAutoUpdate();
 }
 
 export async function activate(
   context: vscode.ExtensionContext
 ): Promise<void> {
-  nvidiaSmiService = new NvidiaSmiService();
-  context.subscriptions.push(nvidiaSmiService);
+  const exec = configurations.get("executablePath", undefined, "");
+  if (exec.includes("rocm")) {
+    smiService = new RocmSmiService();
+  } else {
+    smiService = new NvidiaSmiService();
+  }
+  context.subscriptions.push(smiService);
 
   const nvidiaRefreshCmd = vscode.commands.registerCommand(
     "nvidia-smi-plus.refresh",
@@ -45,15 +49,15 @@ export async function activate(
   context.subscriptions.push(nvidiaOpenJsonCmd);
 
   const gpuInfoProvider = new GPUInfoProvider();
-  nvidiaSmiService.onDidInfoAcquired(gpuInfoProvider.refresh, gpuInfoProvider);
+  smiService.onDidInfoAcquired(gpuInfoProvider.refresh, gpuInfoProvider);
   vscode.window.registerTreeDataProvider("nvidia-gpus", gpuInfoProvider);
 
   const configChange = vscode.workspace.onDidChangeConfiguration((event) => {
     if (event.affectsConfiguration("nvidia-smi-plus.refresh")) {
-      nvidiaSmiService?.setAutoUpdate();
+      smiService?.setAutoUpdate();
     }
     if (event.affectsConfiguration("nvidia-smi-plus")) {
-      nvidiaSmiService?.update();
+      smiService?.update();
     }
   });
   context.subscriptions.push(configChange);
